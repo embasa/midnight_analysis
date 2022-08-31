@@ -59,7 +59,7 @@ int diceRemaining(dice_state_ptr dice);
  */
 int printDiceState(dice_state_ptr dice);
 
-#ifdef DICE_STATE_DEBUG
+#ifdef DICE_STATE_TESTS
 int runDiceStateTests();
 #endif
 

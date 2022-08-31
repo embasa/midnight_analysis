@@ -1,24 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "dice_state.h"
 
-#define MAX_DICE 6
+#define MIN_VALUE 1
+#define MAX_VALUE 6
 
 typedef struct dice_state {
-    int selected[MAX_DICE];
+    int selected[MAX_VALUE];
     int num_selected;
-    int remaining[MAX_DICE];
+    int remaining[MAX_VALUE];
     int num_remaining;
     int current_score;
 } dice_state;
 
 bool hasDiceByValue(dice_state_ptr dice, int value) {
     if (NULL == dice) return false;
-    if ((value < 1) || (6 < value)) return false;
+    if ((value < MIN_VALUE) || (MAX_VALUE < value)) return false;
     return dice->remaining[value-1] > 0;
 }
 
 int selectDiceByValue(dice_state_ptr dice, int value) {
     if (NULL == dice) return -1;
-    if ((value < 1) || (6 < value)) return -1;
+    if ((value < MIN_VALUE) || (MAX_VALUE < value)) return -1;
     if (dice->remaining[value-1] <= 0) return -1;
 
 
@@ -38,11 +41,13 @@ int selectDiceByValue(dice_state_ptr dice, int value) {
 
 bool hasOneDice(dice_state_ptr dice) {
     if (NULL == dice) return false;
+    if (MAX_VALUE < 1) return false;
     return dice->remaining[1-1] > 0;
 }
 
 bool hasFourDice(dice_state_ptr dice) {
     if (NULL == dice) return false;
+    if (MAX_VALUE < 4) return false;
     return dice->remaining[4-1] > 0;
 }
 
@@ -50,7 +55,7 @@ int rollDice(dice_state_ptr dice) {
     int i = 0;
     if (NULL == dice) return 0;
     while (i < dice->num_remaining) {
-        dice->remaining[rand()%6]++;
+        dice->remaining[rand()%MAX_VALUE]++;
         i++;
     }
     return 0;
@@ -70,7 +75,7 @@ int printDiceState(dice_state_ptr dice) {
     } else {
         printf("Selected  dice:\n");
         int value = 0;
-        while (value < 6) {
+        while (value < MAX_VALUE) {
             int count = 0;
             while (count < dice->selected[value]) {
                 printf("%d ", value+1);
@@ -84,7 +89,7 @@ int printDiceState(dice_state_ptr dice) {
     } else {
         printf("Remaining dice:\n");
         int value = 0;
-        while (value < 6) {
+        while (value < MAX_VALUE) {
             int count = 0;
             while (count < dice->remaining[value]) {
                 printf("%d ", value+1);
@@ -98,7 +103,7 @@ int printDiceState(dice_state_ptr dice) {
 }
 
 
-#ifdef DICE_STATE_DEBUG
+#ifdef DICE_STATE_TESTS
 int runDiceStateTests() {
     printf("Run tests for dice_state.h interface here.\n");
     return 0;
